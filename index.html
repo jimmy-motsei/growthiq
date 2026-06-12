@@ -305,6 +305,7 @@
   <a href="#phase5">Phase 5 — AI Layer</a>
   <a href="#phase6">Phase 6 — GTM & Launch</a>
   <a href="#integrations">Integration Map</a>
+  <a href="#ip">Intellectual Property</a>
   <a href="#openq">Open Questions</a>
 </div>
 
@@ -990,9 +991,142 @@
     </div>
   </div>
 
+  <!-- INTELLECTUAL PROPERTY -->
+  <div class="section" id="ip">
+    <div class="section-label">Section 08</div>
+    <h2>Intellectual Property</h2>
+    <p class="section-desc">How the AI &amp; automation layer (Scope item 4) is built, and how the resulting IP sits between the parties. Source: <em>GrowthIQ AI &amp; Automation Layer — Build Approach &amp; IP Position</em> (Maru Online, IP section revised 12 June 2026). This is a discussion draft for alignment before the engagement agreement is finalised — not a binding legal document.</p>
+
+    <div class="callout decision">
+      <strong>Recommended build approach — reusable core engine + GrowthIQ adapter</strong>
+      Rather than a fully bespoke from-scratch build, Maru builds on a shared orchestration engine (automation logic, reporting templates, scoring models, prompt frameworks) configured for GrowthIQ through a thin client-specific layer (ESD/B-BBEE domain rules, the NetGen data connector, branding). GrowthIQ still gets a system built to its real platform and compliance domain — not a generic shell — delivered faster, to a higher standard, and at a price that fits SME economics because the engine doesn't start from zero.
+    </div>
+
+    <div class="portal-grid">
+      <div class="portal-module">
+        <h4>Option A — Fully custom build</h4>
+        <ul>
+          <li>Every component engineered only for GrowthIQ</li>
+          <li>Cost-to-value mismatch at SME economics</li>
+          <li>Slower time-to-value — extends the runway</li>
+          <li>No compounding benefit; re-engineered at full cost when needs shift</li>
+        </ul>
+      </div>
+      <div class="portal-module">
+        <h4>Option B — Reusable engine + adapter — Recommended</h4>
+        <ul>
+          <li>Shared core engine, configured per client</li>
+          <li>ESD/B-BBEE domain logic encoded in the adapter, not assumed away</li>
+          <li>Built to GrowthIQ's real NetGen data boundary</li>
+          <li>Improvements from other engagements flow back into a better-maintained core</li>
+        </ul>
+      </div>
+    </div>
+
+    <p style="font-size:13px; color: var(--grey-600); margin: 4px 0 16px;"><strong>The recommended structure splits into two parts:</strong></p>
+    <div class="integration-map">
+      <div class="int-row"><div class="int-from">Core engine</div><div class="int-arrow">→</div><div class="int-to"><strong>Shared, reusable</strong> — automation orchestration logic, reporting &amp; audit-pack frameworks, client-health scoring models, AI prompt &amp; summarisation frameworks.</div></div>
+      <div class="int-row"><div class="int-from">Client adapter</div><div class="int-arrow">→</div><div class="int-to"><strong>Built per engagement</strong> — GrowthIQ's ESD/B-BBEE domain rules, the NetGen data connector, branding, terminology and reporting formats.</div></div>
+    </div>
+
+    <div class="callout blocker">
+      <strong>The central legal risk this framework addresses</strong>
+      Under s21 of the Copyright Act 98 of 1978, copyright in contractor-created software vests in <strong>Maru by default</strong> — not SeokaneInc — unless explicitly assigned in writing under s22(3). Absent a written assignment clause, SeokaneInc has no automatic ownership of anything Maru builds. The framework below fixes this by assigning GrowthIQ-specific deliverables to SeokaneInc on payment.
+    </div>
+
+    <p style="font-size:13px; color: var(--grey-600); margin-bottom: 16px;"><strong>Governing legal framework (SA-primary, with international instruments):</strong></p>
+    <div class="integration-map">
+      <div class="int-row"><div class="int-from">Copyright Act 98 of 1978</div><div class="int-arrow">→</div><div class="int-to"><strong>Primary statute.</strong> Software is a 'literary work' (s1). Copyright vests in the author by default (s21); assignment to SeokaneInc must be in writing (s22(3)).</div></div>
+      <div class="int-row"><div class="int-from">ECTA 25 of 2002</div><div class="int-arrow">→</div><div class="int-to">An engagement agreement executed electronically carries the same legal weight as a signed paper document (s11).</div></div>
+      <div class="int-row"><div class="int-from">POPIA 4 of 2013</div><div class="int-arrow">→</div><div class="int-to">SeokaneInc is the <strong>Responsible Party</strong>; Maru is an <strong>Operator</strong> — may only process personal data on documented instruction, with no commercial benefit derived from it.</div></div>
+      <div class="int-row"><div class="int-from">Berne Convention</div><div class="int-arrow">→</div><div class="int-to">Copyright is automatic on creation — no registration — and protected across 181 member states.</div></div>
+      <div class="int-row"><div class="int-from">TRIPS (WTO)</div><div class="int-arrow">→</div><div class="int-to">Computer programs protected as literary works; relevant where cross-border licensing or enforcement applies.</div></div>
+    </div>
+
+    <div class="callout warning">
+      <strong>Note on AI-specific IP</strong>
+      The Copyright Amendment Bill (B13-2017) has not been enacted. The 1978 Act remains in force and does not address AI-generated works or prompt frameworks explicitly. The allocation below is a commercially reasonable position pending legislative clarity — both parties acknowledge this is an evolving area of law.
+    </div>
+
+    <div class="phase-block">
+      <div class="phase-header">
+        <h3>IP Layer Classification</h3>
+        <div class="phase-meta">Three layers arise from this engagement — each treated differently in the agreement's IP clause</div>
+      </div>
+      <table class="task-table">
+        <tr>
+          <th style="width:20%">Layer</th>
+          <th style="width:34%">What it includes</th>
+          <th style="width:18%">Who owns it</th>
+          <th style="width:28%">SeokaneInc's rights</th>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Layer 1 — Background IP</div><div class="task-detail">Pre-existing / independently developed</div></td>
+          <td class="task-how">Core engine, automation orchestration logic, reporting frameworks, client-health scoring models, AI prompt methodology, Make.com / Brevo / WhatsApp templates, third-party API integrations.</td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Perpetual, irrevocable, royalty-free, non-exclusive licence as incorporated in the GrowthIQ instance (§3.3). No assignment occurs.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Layer 2 — Project Deliverables</div><div class="task-detail">Built specifically &amp; exclusively for GrowthIQ</div></td>
+          <td class="task-how">ESD/B-BBEE domain rules, the NetGen data connector, GrowthIQ-branded reports &amp; dashboards, audit-pack formats, all client &amp; SME data, GrowthIQ-specific branding.</td>
+          <td><span class="owner-city">SeokaneInc</span></td>
+          <td class="task-how"><strong>Full copyright ownership</strong>, assigned under s22 on receipt of full payment for the relevant period. May modify, redeploy, sublicense or transfer at its discretion.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Layer 3 — Foreground IP</div><div class="task-detail">New, non-GIQ-specific methods emerging during the build</div></td>
+          <td class="task-how">New frameworks or methodologies that did not exist before the engagement and are not GrowthIQ-specific in application.</td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Same perpetual, irrevocable, royalty-free licence (§3.3). Maru may reuse it provided no GrowthIQ Confidential Information is carried across.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Client &amp; SME Data</div><div class="task-detail">All platform data, outputs, audit packs</div></td>
+          <td class="task-how">SME profiles, ESD records, corporate client data, audit outputs — regardless of which party built the system that processes them.</td>
+          <td><span class="owner-city">SeokaneInc</span></td>
+          <td class="task-how"><strong>Exclusive ownership.</strong> Maru acts only as Operator under POPIA (process on instruction; return or destroy within 30 days on exit).</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="portal-grid">
+      <div class="portal-module">
+        <h4>Licence grant to SeokaneInc (§3.3)</h4>
+        <ul>
+          <li>Perpetual, irrevocable, royalty-free, non-exclusive</li>
+          <li>Survives termination — including Maru insolvency or cessation</li>
+          <li>Transferable only with a bona fide sale of the GrowthIQ business</li>
+          <li>Sublicence permitted to providers maintaining the platform</li>
+        </ul>
+      </div>
+      <div class="portal-module">
+        <h4>AI-specific IP (§3.4)</h4>
+        <ul>
+          <li>Generic prompt frameworks → Background IP (Maru), licensed</li>
+          <li>GIQ-specific prompt configs → Layer 2, assigned on payment</li>
+          <li>Models fine-tuned on GIQ data → Layer 2, assigned; Maru retains no reuse right</li>
+          <li>Pure third-party API inference → no model IP created</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>Data ownership &amp; POPIA (§3.5)</strong>
+      All GrowthIQ platform data is SeokaneInc's exclusive property. As Operator, Maru processes only on SeokaneInc's documented instruction; derives no commercial value from the data; implements POPIA s19 security measures; notifies SeokaneInc of any breach without delay; and returns or securely destroys all data within 30 days of termination, at SeokaneInc's election.
+    </div>
+
+    <div class="callout decision">
+      <strong>Business-continuity escrow (§3.6 — recommended)</strong>
+      The perpetual licence only helps if SeokaneInc can actually run the instance without Maru. The parties should hold the GrowthIQ-specific configuration, API documentation and runbooks with a neutral escrow agent, released if Maru enters administration/liquidation or ceases service for 30+ consecutive days without an agreed cure plan. Standard enterprise-software practice — it does not affect Maru's ownership of Background IP, and it directly answers the "no future NetGen-style lock-in" concern.
+    </div>
+
+    <div class="callout warning">
+      <strong>⚠ Action required — Growth Firm / SeokaneInc</strong>
+      Sections 3.1–3.7 require City's written sign-off (reply email or annotation) before the engagement agreement is finalised — this draft is translated into binding clauses there. Jointly developed improvements (§3.7) follow the Layer 3 treatment: Maru retains copyright, SeokaneInc receives the same §3.3 licence. Flag any proposed amendments before sign-off — changes after execution are significantly harder to negotiate.
+    </div>
+  </div>
+
   <!-- OPEN QUESTIONS -->
   <div class="section" id="openq">
-    <div class="section-label">Section 08</div>
+    <div class="section-label">Section 09</div>
     <h2>Open Questions — Decisions Required Before Work Proceeds</h2>
     <p class="section-desc">These are not optional. Each one blocks a specific deliverable. Resolve before the phase it affects starts.</p>
     <div class="oq-list">
@@ -1059,14 +1193,14 @@
 
 <div class="report-footer">
   <div>GrowthIQ Brand Build · Technical Delivery Specification · Maru Online (Pty) Ltd</div>
-  <div>Internal working document · 10 June 2026 · v1.1 — updated with Phase 5 (AI Layer), Phase 6 (GTM), confirmed stack decisions</div>
+  <div>Internal working document · 12 June 2026 · v1.2 — added Section 08 (Intellectual Property); v1.1 added Phase 5 (AI Layer), Phase 6 (GTM), confirmed stack decisions</div>
 </div>
 
 <script>
   (function () {
     var btn = document.getElementById('backToTop');
     var staticToc = document.querySelector('.toc');
-    var sections = ['stack','portal','phase1','phase2','phase3','phase4','phase5','phase6','integrations','openq'];
+    var sections = ['stack','portal','phase1','phase2','phase3','phase4','phase5','phase6','integrations','ip','openq'];
 
     function getActiveSection() {
       var scrollY = window.scrollY + 80;
