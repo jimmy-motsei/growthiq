@@ -239,9 +239,49 @@
     .stack-grid { grid-template-columns: 1fr 1fr; }
     .portal-grid { grid-template-columns: 1fr; }
   }
+
+  /* Active state on static toc */
+  .toc a.active { border-color: var(--cyan); color: var(--cyan); background: #eaf7fb; }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Back to top */
+  .back-to-top {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 1000;
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-family: inherit;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+  }
+  .back-to-top.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .back-to-top:hover { background: var(--cyan); }
+
+  @media (max-width: 900px) {
+    .back-to-top { bottom: 20px; right: 20px; }
+  }
 </style>
 </head>
 <body>
+
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Back to top</button>
 
 <div class="report-header">
   <div class="brand">Maru Online · Internal Working Document</div>
@@ -1026,6 +1066,35 @@
   <div>GrowthIQ Brand Build · Technical Delivery Specification · Maru Online (Pty) Ltd</div>
   <div>Internal working document · 10 June 2026 · v1.1 — updated with Phase 5 (AI Layer), Phase 6 (GTM), confirmed stack decisions</div>
 </div>
+
+<script>
+  (function () {
+    var btn = document.getElementById('backToTop');
+    var staticToc = document.querySelector('.toc');
+    var sections = ['stack','portal','phase1','phase2','phase3','phase4','phase5','phase6','integrations','openq'];
+
+    function getActiveSection() {
+      var scrollY = window.scrollY + 80;
+      var active = sections[0];
+      for (var i = 0; i < sections.length; i++) {
+        var el = document.getElementById(sections[i]);
+        if (el && el.offsetTop <= scrollY) active = sections[i];
+      }
+      return active;
+    }
+
+    function onScroll() {
+      btn.classList.toggle('visible', window.scrollY > 300);
+
+      var active = getActiveSection();
+      document.querySelectorAll('.toc a').forEach(function(a) {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + active);
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+  })();
+</script>
 
 </body>
 </html>
