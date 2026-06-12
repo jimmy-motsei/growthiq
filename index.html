@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GrowthIQ — Technical Delivery Specification | Maru Online</title>
+<style>
+  :root {
+    --black: #0a0a0a;
+    --white: #ffffff;
+    --grey-50: #f8f8f8;
+    --grey-100: #f0f0f0;
+    --grey-200: #e0e0e0;
+    --grey-400: #9a9a9a;
+    --grey-600: #555555;
+    --grey-800: #2a2a2a;
+    --cyan: #3DB8C6;
+    --amber: #F5A623;
+    --green: #2ECC71;
+    --red: #E74C3C;
+    --blue: #2980B9;
+    --purple: #8E44AD;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--black);
+    background: var(--white);
+  }
+  /* Header */
+  .report-header {
+    background: var(--black);
+    color: var(--white);
+    padding: 60px 80px 50px;
+  }
+  .brand { font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--grey-400); margin-bottom: 32px; }
+  .report-header h1 { font-size: 38px; font-weight: 700; line-height: 1.2; margin-bottom: 12px; }
+  .report-header .subtitle { font-size: 18px; color: var(--grey-400); margin-bottom: 40px; }
+  .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; border-top: 1px solid #222; padding-top: 32px; }
+  .meta-item { }
+  .meta-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--grey-400); margin-bottom: 4px; }
+  .meta-value { font-size: 14px; color: var(--white); font-weight: 500; }
+
+  /* Nav */
+  .toc {
+    background: var(--grey-50);
+    border-bottom: 1px solid var(--grey-200);
+    padding: 24px 80px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .toc a {
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--grey-600);
+    text-decoration: none;
+    padding: 4px 12px;
+    border: 1px solid var(--grey-200);
+    border-radius: 4px;
+    background: var(--white);
+  }
+  .toc a:hover { border-color: var(--cyan); color: var(--cyan); }
+
+  /* Layout */
+  .page-body { max-width: 1100px; margin: 0 auto; padding: 60px 80px; }
+
+  /* Section headings */
+  .section { margin-bottom: 72px; }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .section h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--black);
+  }
+  .section .section-desc {
+    font-size: 14px;
+    color: var(--grey-600);
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--grey-200);
+    padding-bottom: 20px;
+  }
+
+  /* Stack card */
+  .stack-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+  .stack-card {
+    border: 1px solid var(--grey-200);
+    border-radius: 8px;
+    padding: 20px;
+    background: var(--white);
+  }
+  .stack-card .tool-name { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  .stack-card .tool-role { font-size: 13px; color: var(--grey-600); margin-bottom: 8px; }
+  .stack-card .tool-note { font-size: 12px; color: var(--grey-400); font-style: italic; }
+  .stack-card.connected .tool-name::after { content: " ✓"; color: var(--green); font-size: 12px; }
+  .stack-card.tbd .tool-name { color: var(--amber); }
+
+  /* Task block */
+  .phase-block { margin-bottom: 48px; }
+  .phase-header {
+    background: var(--black);
+    color: var(--white);
+    padding: 16px 24px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .phase-header h3 { font-size: 16px; font-weight: 700; }
+  .phase-header .phase-meta { font-size: 12px; color: var(--grey-400); }
+  .task-table { width: 100%; border-collapse: collapse; border: 1px solid var(--grey-200); border-top: none; }
+  .task-table th {
+    background: var(--grey-50);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 10px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--grey-600);
+    border-bottom: 1px solid var(--grey-200);
+  }
+  .task-row td {
+    padding: 14px 16px;
+    vertical-align: top;
+    border-bottom: 1px solid var(--grey-100);
+    font-size: 13.5px;
+  }
+  .task-row:last-child td { border-bottom: none; }
+  .task-row:hover { background: var(--grey-50); }
+  .task-name { font-weight: 600; color: var(--black); margin-bottom: 4px; }
+  .task-how { color: var(--grey-800); font-size: 13px; line-height: 1.5; }
+  .task-detail { font-size: 12px; color: var(--grey-600); margin-top: 4px; }
+  .owner-maru { display: inline-block; background: #EAF7FB; color: var(--cyan); font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 3px; }
+  .owner-city { display: inline-block; background: #FFF4E0; color: var(--amber); font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 3px; }
+  .tool-tag { display: inline-block; background: var(--grey-100); color: var(--grey-800); font-size: 11px; padding: 2px 8px; border-radius: 3px; margin: 2px 2px 2px 0; font-weight: 500; }
+  .tool-tag.primary { background: #EAF7FB; color: var(--cyan); }
+  .blocker-badge { display: inline-block; background: #FDECEA; color: var(--red); font-size: 11px; padding: 2px 8px; border-radius: 3px; font-weight: 600; }
+  .open-q { background: #FFF9EE; border-left: 3px solid var(--amber); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 12px; color: var(--grey-800); margin-top: 6px; }
+  .open-q strong { color: var(--amber); }
+
+  /* Portal intel */
+  .portal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .portal-module {
+    border: 1px solid var(--grey-200);
+    border-radius: 8px;
+    padding: 16px 20px;
+  }
+  .portal-module h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .portal-module ul { list-style: none; padding: 0; }
+  .portal-module ul li { font-size: 13px; color: var(--grey-600); padding: 2px 0; padding-left: 14px; position: relative; }
+  .portal-module ul li::before { content: "→"; position: absolute; left: 0; color: var(--cyan); font-size: 11px; top: 3px; }
+  .portal-module.working { border-color: #c3e6cb; }
+  .portal-module.working h4::after { content: " (Works)"; font-size: 11px; color: var(--green); font-weight: 400; }
+  .portal-module.broken { border-color: #f5c6cb; }
+  .portal-module.broken h4::after { content: " (Broken)"; font-size: 11px; color: var(--red); font-weight: 400; }
+  .portal-module.critical { border-color: #f5c6cb; background: #fff8f8; }
+
+  /* Warning boxes */
+  .callout {
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    font-size: 13.5px;
+  }
+  .callout.warning { background: #FFF9EE; border-left: 4px solid var(--amber); }
+  .callout.blocker { background: #FDECEA; border-left: 4px solid var(--red); }
+  .callout.info { background: #EAF7FB; border-left: 4px solid var(--cyan); }
+  .callout.decision { background: #f3e8ff; border-left: 4px solid var(--purple); }
+  .callout strong { display: block; margin-bottom: 4px; }
+
+  /* Integration map */
+  .integration-map {
+    background: var(--grey-50);
+    border: 1px solid var(--grey-200);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .int-row { display: flex; align-items: flex-start; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--grey-200); }
+  .int-row:last-child { border-bottom: none; }
+  .int-from { font-weight: 700; font-size: 13px; min-width: 160px; }
+  .int-arrow { color: var(--cyan); font-weight: 700; min-width: 20px; text-align: center; padding-top: 1px; }
+  .int-to { font-size: 13px; color: var(--grey-800); }
+
+  /* Open questions */
+  .oq-list { counter-reset: oq; }
+  .oq-item {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--grey-100);
+  }
+  .oq-item:last-child { border-bottom: none; }
+  .oq-num {
+    background: var(--amber);
+    color: var(--white);
+    font-weight: 700;
+    font-size: 13px;
+    min-width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .oq-body { }
+  .oq-q { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .oq-why { font-size: 13px; color: var(--grey-600); }
+  .oq-blocks { font-size: 12px; color: var(--red); margin-top: 4px; font-weight: 500; }
+
+  /* Footer */
+  .report-footer {
+    background: var(--grey-50);
+    border-top: 1px solid var(--grey-200);
+    padding: 32px 80px;
+    font-size: 12px;
+    color: var(--grey-400);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  @media (max-width: 900px) {
+    .report-header, .toc, .page-body, .report-footer { padding-left: 24px; padding-right: 24px; }
+    .meta-grid { grid-template-columns: repeat(2, 1fr); }
+    .stack-grid { grid-template-columns: 1fr 1fr; }
+    .portal-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="report-header">
+  <div class="brand">Maru Online · Internal Working Document</div>
+  <h1>GrowthIQ — Technical Delivery Specification</h1>
+  <div class="subtitle">Every phase. Every task. Every tool. No mid-project guesswork.</div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Client</div><div class="meta-value">City Seokane / Seokane Inc</div></div>
+    <div class="meta-item"><div class="meta-label">Project</div><div class="meta-value">GrowthIQ Brand Build (Phases 1–6)</div></div>
+    <div class="meta-item"><div class="meta-label">Prepared</div><div class="meta-value">10 June 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Status</div><div class="meta-value">Working Draft — Internal Only</div></div>
+  </div>
+</div>
+
+<div class="toc">
+  <a href="#stack">Stack Decisions</a>
+  <a href="#portal">Portal Intelligence</a>
+  <a href="#phase1">Phase 1</a>
+  <a href="#phase2">Phase 2</a>
+  <a href="#phase3">Phase 3</a>
+  <a href="#phase4">Phase 4</a>
+  <a href="#phase5">Phase 5 — AI Layer</a>
+  <a href="#phase6">Phase 6 — GTM & Launch</a>
+  <a href="#integrations">Integration Map</a>
+  <a href="#openq">Open Questions</a>
+</div>
+
+<div class="page-body">
+
+  <!-- SECTION 1: STACK -->
+  <div class="section" id="stack">
+    <div class="section-label">Section 01</div>
+    <h2>Platform & Stack Decisions</h2>
+    <p class="section-desc">These are locked decisions — agreed before work begins. No re-evaluation mid-project.</p>
+
+    <div class="callout info">
+      <strong>Design principle</strong>
+      City holds the portal source code and wants to be free of NetGen dependency long-term. Every tool and platform chosen here must be one Maru can manage independently, with no third-party lock-in that creates a future equivalent of the NetGen situation.
+    </div>
+
+    <div class="stack-grid">
+      <div class="stack-card connected">
+        <div class="tool-name">Next.js 14</div>
+        <div class="tool-role">Website build framework — App Router, RSC</div>
+        <div class="tool-note">Phase 4 website. Maru's standard build. Deployed to Vercel.</div>
+      </div>
+      <div class="stack-card connected">
+        <div class="tool-name">Vercel</div>
+        <div class="tool-role">Hosting + deployment pipeline</div>
+        <div class="tool-note">MCP connected. ~R150/month. Preview deploys for every branch. SA edge via CDN.</div>
+      </div>
+      <div class="stack-card connected">
+        <div class="tool-name">Cloudflare</div>
+        <div class="tool-role">DNS, CDN, SSL certificates</div>
+        <div class="tool-note">Free tier sufficient. Manages growthiq.co.za DNS. SSL auto-provisioned.</div>
+      </div>
+      <div class="stack-card connected">
+        <div class="tool-name">Tailwind CSS</div>
+        <div class="tool-role">Styling — utility-first, consistent with brand tokens</div>
+        <div class="tool-note">Brand colours as CSS custom properties. No design-dev handoff mismatch.</div>
+      </div>
+      <div class="stack-card connected">
+        <div class="tool-name">Resend</div>
+        <div class="tool-role">Transactional email — form submissions to City</div>
+        <div class="tool-note">Free tier: 3,000 emails/month. Contact + demo form. From: noreply@growthiq.co.za.</div>
+      </div>
+      <div class="stack-card connected">
+        <div class="tool-name">Google Analytics 4</div>
+        <div class="tool-role">Website analytics + event tracking</div>
+        <div class="tool-note">The portal has zero tracking — this cannot happen on the marketing site. GA4 on day 1.</div>
+      </div>
+      <div class="stack-card connected">
+        <div class="tool-name">Google Search Console</div>
+        <div class="tool-role">SEO monitoring + sitemap submission</div>
+        <div class="tool-note">growthiq.co.za currently returns zero Google results. GSC is the first SEO action.</div>
+      </div>
+      <div class="stack-card connected">
+        <div class="tool-name">Figma</div>
+        <div class="tool-role">Design — identity directions, mockups, component specs</div>
+        <div class="tool-note">Plugin connected. Phase 2 identity directions + Phase 4 site mockups built here.</div>
+      </div>
+      <div class="stack-card connected">
+        <div class="tool-name">Notion</div>
+        <div class="tool-role">Project management + client sign-off</div>
+        <div class="tool-note">City has Can Comment access. Phase sign-off checkboxes live here. MCP connected.</div>
+      </div>
+      <div class="stack-card connected">
+        <div class="tool-name">Notion (single system)</div>
+        <div class="tool-role">Project management, task tracking + client sign-off</div>
+        <div class="tool-note">ClickUp removed. Notion is the single system — client-facing pages AND internal Maru task tracking. MCP connected. SOP pilot tracked here.</div>
+      </div>
+      <div class="stack-card tbd">
+        <div class="tool-name">GitHub</div>
+        <div class="tool-role">Version control — website codebase</div>
+        <div class="tool-note">github.com/jimmy-motsei. Phase 4 website repo created here. Vercel linked for auto-deploy.</div>
+      </div>
+      <div class="stack-card tbd">
+        <div class="tool-name">WhatsApp Business</div>
+        <div class="tool-role">Primary contact CTA on website</div>
+        <div class="tool-note">wa.me/27837789288 with pre-filled message. SA market default — email CTAs convert poorly.</div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>✓ Resolved: CMS — Sanity confirmed. Maru manages all content.</strong>
+      Maru acts as GrowthIQ's dedicated Champion — responsible for ongoing content, new business development, and digital operations post-launch. City focuses on service delivery. Sanity CMS (free tier) gives Maru the ability to update client stories, testimonials, and copy without touching code. Commercial terms for the Champion role to be agreed once build is live.
+    </div>
+
+    <div class="callout info">
+      <strong>✓ Resolved: Demo booking — Cal.com confirmed.</strong>
+      Cal.com (open source) replaces Calendly. Embeds cleanly in the Next.js Contact page. Syncs with Google Calendar — bookings land directly in City's calendar. No separate account for City to manage. Demo request emails route to the GrowthIQ inbox (hello@growthiq.co.za or similar), managed by Maru. City copied on every submission.
+    </div>
+  </div>
+
+  <!-- SECTION 2: PORTAL INTELLIGENCE -->
+  <div class="section" id="portal">
+    <div class="section-label">Section 02</div>
+    <h2>Portal Intelligence Summary</h2>
+    <p class="section-desc">What we know about portal.growthiq.co.za from the May 2026 authenticated audit. This intelligence directly informs what we build in Phase 4 and what we choose to feature in website copy.</p>
+
+    <div class="callout warning">
+      <strong>Critical constraint for Phase 4 copywriting</strong>
+      Do not feature portal capabilities that are currently broken in website copy. The document expiry alert system is non-functional. The dashboard is showing incorrect data. The mobile experience is broken. Only feature confirmed-working modules. See below.
+    </div>
+
+    <div class="portal-grid">
+      <div class="portal-module working">
+        <h4>SME Management (10-tab company records)</h4>
+        <ul>
+          <li>Company Details, Funding, Employees</li>
+          <li>Documents, Compliance Action List</li>
+          <li>Client Information, Assessments</li>
+          <li>Features, Financials, Operational Progress</li>
+          <li>Comprehensive — supports actual ESD workflow</li>
+        </ul>
+      </div>
+      <div class="portal-module working">
+        <h4>Compliance Task Tracking</h4>
+        <ul>
+          <li>Action List per SME: owner, deadline, status</li>
+          <li>Statuses: Overdue / In Progress / Completed / Not Started</li>
+          <li>Multiple overdue tasks confirmed active — system works</li>
+          <li>Problem is navigation to it (4 clicks deep), not functionality</li>
+        </ul>
+      </div>
+      <div class="portal-module working">
+        <h4>Assessment & Scoring System</h4>
+        <ul>
+          <li>Scored questionnaires with weighted answers</li>
+          <li>Categories and multiple-choice responses</li>
+          <li>"Generate SME Journey Report" function exists</li>
+          <li>Meaningful differentiator for corporate pitch</li>
+        </ul>
+      </div>
+      <div class="portal-module working">
+        <h4>Audit Trail</h4>
+        <ul>
+          <li>Every user action logged with timestamps</li>
+          <li>Compliance-grade paper trail</li>
+          <li>Critical for corporate reporting accountability</li>
+          <li>Feature this prominently in website copy</li>
+        </ul>
+      </div>
+      <div class="portal-module broken">
+        <h4>Document Expiry Alerts</h4>
+        <ul>
+          <li>BEE certificate expired Nov 2025 — not flagged</li>
+          <li>Dashboard shows zero upcoming expirations</li>
+          <li>Do NOT feature in Phase 4 website copy</li>
+          <li>Fix required before AI layer (Phase 5 scope)</li>
+        </ul>
+      </div>
+      <div class="portal-module broken">
+        <h4>Error Monitoring (Sentry)</h4>
+        <ul>
+          <li>Both Sentry files returning errors — monitoring is blind</li>
+          <li>Technical problems going unreported since handover</li>
+          <li>No active NetGen maintenance confirmed</li>
+          <li>Note in Phase 4: our site will have monitoring from day 1</li>
+        </ul>
+      </div>
+      <div class="portal-module broken">
+        <h4>Default Landing Screen</h4>
+        <ul>
+          <li>Every login lands on raw admin user table</li>
+          <li>Dashboard is a manual navigation away</li>
+          <li>Configuration fix, not a rebuild</li>
+          <li>Phase 4 website must not promise "seamless client experience"</li>
+        </ul>
+      </div>
+      <div class="portal-module broken">
+        <h4>Analytics / Usage Tracking</h4>
+        <ul>
+          <li>Zero tracking inside portal</li>
+          <li>Cannot confirm which clients are logging in</li>
+          <li>Cannot identify at-risk accounts</li>
+          <li>Portal remediation (later phase) must address this first</li>
+        </ul>
+      </div>
+    </div>
+
+    <p style="font-size:13px; color: var(--grey-600); margin-bottom: 16px;"><strong>Portal workflow — how it actually functions (for Phase 4 "How It Works" page):</strong></p>
+    <div class="integration-map">
+      <div class="int-row"><div class="int-from">Corporate client</div><div class="int-arrow">→</div><div class="int-to">Engages Growth Firm to manage ESD programme against B-BBEE Amended Codes 2023</div></div>
+      <div class="int-row"><div class="int-from">SMEs onboarded</div><div class="int-arrow">→</div><div class="int-to">Each SME gets a full 10-tab record: company profile, documents, funding, employees, compliance tasks</div></div>
+      <div class="int-row"><div class="int-from">Compliance tasks</div><div class="int-arrow">→</div><div class="int-to">Action List per SME tracks each obligation: owner assigned, deadline set, status updated in real time</div></div>
+      <div class="int-row"><div class="int-from">Assessments</div><div class="int-arrow">→</div><div class="int-to">Scored questionnaires measure SME compliance maturity across weighted categories</div></div>
+      <div class="int-row"><div class="int-from">Reporting</div><div class="int-arrow">→</div><div class="int-to">"Generate SME Journey Report" produces compliance progress output for corporate review</div></div>
+      <div class="int-row"><div class="int-from">Audit trail</div><div class="int-arrow">→</div><div class="int-to">Every action timestamped — corporate clients can verify compliance activity at any point</div></div>
+    </div>
+
+    <div class="callout decision">
+      <strong>Phase 5 CTA vision — AI layer as front door, not the portal directly</strong>
+      The Phase 4 marketing site does NOT link users to the raw portal. Instead, the "Access GrowthIQ" CTA leads to the Phase 5 AI assistant interface (e.g. app.growthiq.co.za). The AI greets the user: "How can I help you today?" — and routes them to the right data or walks them through input step by step. This removes the 4-clicks-deep navigation problem entirely. The portal continues to exist as the data layer; the AI is the face. This vision should be hinted at in Phase 4 website copy ("AI-powered compliance management") without promising functionality that isn't live yet. Phase 5 builds it.
+    </div>
+  </div>
+
+  <!-- PHASE 1 -->
+  <div class="section" id="phase1">
+    <div class="section-label">Phase 01 · Weeks 1–2</div>
+    <h2>Brand Strategy & Positioning</h2>
+    <p class="section-desc">Foundation work. Everything in Phases 2–4 is built on outputs from this phase. No Phase 2 starts until City signs off here.</p>
+
+    <div class="phase-block">
+      <div class="phase-header">
+        <h3>Phase 1 — Task Delivery Map</h3>
+        <div class="phase-meta">Deliverables: Competitive Report · Audience Profiles · Positioning Statement · Messaging Framework</div>
+      </div>
+      <table class="task-table">
+        <tr>
+          <th style="width:22%">Task</th>
+          <th style="width:8%">Owner</th>
+          <th style="width:35%">How We Deliver It</th>
+          <th style="width:20%">Tools</th>
+          <th style="width:15%">Blockers / Notes</th>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Pull and review PwC & Sun International decks</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">City shares decks (PDF or PowerPoint). Claude reads them via the PDF/pptx skill — extracting: language patterns, how they frame ESD obligation, objection handling language, tone, what the corporate sponsor cares about. Output is a structured language/tone analysis doc that feeds directly into the positioning drafts.</td>
+          <td><span class="tool-tag primary">PDF skill</span><span class="tool-tag primary">pptx skill</span><span class="tool-tag">Claude analysis</span></td>
+          <td><span class="blocker-badge">⚠ Blocked</span><div class="task-detail">City has confirmed decks exist but not shared. Chase required.</div></td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Competitive research — ESD, B-BBEE compliance space</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Web research via Claude WebSearch. Scope: Raizcorp (named by City), EmpowerLogic, Verify.co.za, B-BBEE Strat, and SA consultancies operating in ESD. Key angles: how they position (consulting vs. platform vs. hybrid), pricing signals, their language around Amended Codes 2023, target client profile. Note: most SA ESD "solutions" are consulting-led, not SaaS. GrowthIQ's platform approach is a genuine differentiator — the report must surface this clearly.</td>
+          <td><span class="tool-tag primary">WebSearch</span><span class="tool-tag">Claude synthesis</span><span class="tool-tag">docx skill</span></td>
+          <td>Can start immediately. Output: competitive landscape report (Word doc delivered to City in Notion).</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Audience profiling — Transformation, Finance, Procurement</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Three buyer psychology profiles, each covering: role in the ESD decision, their definition of "success," core fear (brief confirmed: "will it replace me?"), what they need to see to say yes, and how they consume information. Portal context informs this: the Action List and assessment scoring are tools these personas will be held accountable for — so "enhancing reporting" is the correct framing. Supplemented with corporate target list (Excel) when City shares — the industry sectors in that list shape which persona is most important.</td>
+          <td><span class="tool-tag primary">Claude synthesis</span><span class="tool-tag">docx skill</span><span class="tool-tag">WebSearch</span></td>
+          <td>Can start from brief alone. Deepens once corporate target list is received.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Share corporate target list (Excel)</div></td>
+          <td><span class="owner-city">City</span></td>
+          <td class="task-how">City emails or uploads to Notion. Once received: Claude reads the Excel via the xlsx skill, identifies which industries and corporate sizes dominate the list, and feeds this into audience profiling and messaging framework (e.g., if 60% are mining companies, the messaging weight shifts).</td>
+          <td><span class="tool-tag primary">xlsx skill</span><span class="tool-tag">Notion upload</span></td>
+          <td><span class="blocker-badge">⚠ Outstanding</span><div class="task-detail">Part of 6-item chase to City.</div></td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Share PwC & Sun International pitch decks</div></td>
+          <td><span class="owner-city">City</span></td>
+          <td class="task-how">City emails or uploads to Notion. Feeds "Pull and review decks" task above.</td>
+          <td><span class="tool-tag">Email / Notion</span></td>
+          <td><span class="blocker-badge">⚠ Outstanding</span></td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Draft positioning statement (3 options)</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Claude drafts three distinct positioning statements based on competitive research + audience profiles + brief. Each option takes a different angle: (A) compliance-first ("The platform that keeps your ESD programme audit-ready"), (B) growth-first ("Turn your ESD obligation into supplier development that compounds"), (C) confidence-first ("The intelligence layer behind corporate transformation reporting"). City selects one. One revision round included. Format: short branded document, not a deck.</td>
+          <td><span class="tool-tag primary">Claude</span><span class="tool-tag">docx skill</span></td>
+          <td>Requires competitive research + audience profiles complete. Blocked on PwC/Sun decks if not received — can draft with caveats and refine once received.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Draft messaging framework</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Builds directly on approved positioning statement. Covers: primary message (1 sentence), audience-specific variants for Transformation Manager / Finance Manager / Procurement, 3–5 tagline options, language to use / avoid, and 2–3 before/after copy examples. This document becomes the input for Phase 3 voice guide and Phase 4 copywriter brief.</td>
+          <td><span class="tool-tag primary">Claude</span><span class="tool-tag">docx skill</span></td>
+          <td>Blocked on positioning sign-off.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Deliver Phase 1 outputs + City sign-off</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">All deliverables compiled into a single Phase 1 pack: (1) Competitive Landscape Report, (2) 3 Audience Profiles, (3) Positioning Statement Options, (4) Messaging Framework. Shared with City via Notion page update + email. City ticks the sign-off checkbox in Notion Phase 1 page. No Phase 2 work begins until checkbox is ticked.</td>
+          <td><span class="tool-tag primary">Notion</span><span class="tool-tag">docx skill</span><span class="tool-tag">Email</span></td>
+          <td>City sign-off is a hard gate. Allow 2–3 days for City review before chasing.</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="section" id="phase2">
+    <div class="section-label">Phase 02 · Weeks 2–4</div>
+    <h2>Visual Identity Creation</h2>
+    <p class="section-desc">Brand from scratch — no existing logo, palette, or visual system. Two directions presented; City selects one with one revision round.</p>
+
+    <div class="callout info">
+      <strong>✓ Resolved: Brand positioning — GrowthIQ is a standalone product.</strong>
+      GrowthIQ is not a sub-brand of Seokane Inc. It stands alone. The footer and About page carry the partner attribution line: <em>"Powered by Seokane Inc &amp; Growth Firm · Integrated by Maru Online."</em> This shows depth and credibility behind the product without subordinating the brand. The wordmark, colour palette, and all identity work proceeds as a fully independent brand. Once GrowthIQ company registration is confirmed, the legal entity name is added to the footer — until then, trading as GrowthIQ under Seokane Inc.
+    </div>
+
+    <div class="phase-block">
+      <div class="phase-header">
+        <h3>Phase 2 — Task Delivery Map</h3>
+        <div class="phase-meta">Deliverables: Wordmark System · Colour Palette · Typography · Brand Expression Mockups</div>
+      </div>
+      <table class="task-table">
+        <tr>
+          <th style="width:22%">Task</th>
+          <th style="width:8%">Owner</th>
+          <th style="width:35%">How We Deliver It</th>
+          <th style="width:20%">Tools</th>
+          <th style="width:15%">Blockers / Notes</th>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Develop 2 identity directions (moodboard + rationale)</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Two distinct visual directions — each with a moodboard (reference images, colour swatch, type pairing) and a written rationale explaining why this direction fits the brand positioning from Phase 1. Direction A: clean intelligence (Apple-influenced — minimal, precise, premium); Direction B: confident momentum (BMW-influenced — bold geometry, purposeful motion, authority). Each moodboard built in Figma as a shareable frame. Presented as a PDF export or Figma share link to City.</td>
+          <td><span class="tool-tag primary">Figma</span><span class="tool-tag">canvas-design skill</span><span class="tool-tag">PDF skill</span></td>
+          <td>Requires Phase 1 sign-off. Reference brands confirmed: Apple, BMW.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Present directions + City selection</div></td>
+          <td><span class="owner-maru">Maru</span> → <span class="owner-city">City</span></td>
+          <td class="task-how">Maru shares Figma link or PDF in Notion + emails City. City leaves a comment in Notion with direction selection and specific feedback. No WhatsApp decision-making — all feedback must be in Notion for the record (SOP requirement). Maru acknowledges within 24 hours and confirms revision scope.</td>
+          <td><span class="tool-tag primary">Notion</span><span class="tool-tag">Email</span></td>
+          <td>City must respond in Notion, not WhatsApp. Remind in email.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Refine selected direction (1 revision round)</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Apply City's specific feedback to the selected direction in Figma. Revisions are scoped to what City marked up. If City requests elements from the non-selected direction, these are noted as out of scope and quoted separately. One revision round is included in retainer — additional rounds billed at hourly rate.</td>
+          <td><span class="tool-tag primary">Figma</span></td>
+          <td>Scope of revision defined by City's Notion comment. Flag out-of-scope requests proactively.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Build full logo system (all variants + exports)</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">From the approved direction: build the full mark in Figma as vector (SVG). Variants required: (1) Primary horizontal lockup, (2) Stacked variant, (3) Icon/symbol only, (4) Reversed (white on dark), (5) Single-colour (black), (6) Single-colour (white). Export formats: SVG (all variants), PNG at 1×/2×/3×, and a ZIP handed to City. All file names follow a naming convention: growthiq-logo-primary.svg, growthiq-logo-icon-dark.png, etc.</td>
+          <td><span class="tool-tag primary">Figma</span><span class="tool-tag">SVG export</span></td>
+          <td>Company registration status must be confirmed before locking wordmark text.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Colour palette — finalise with accessibility check</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Define: 1 primary colour, 1 secondary, 2 neutrals (light + dark), 1 alert/CTA accent. For each: Hex, RGB, CMYK values. Run WCAG AA contrast check — text on background combinations must pass minimum 4.5:1 ratio. This is not optional — corporate clients viewing compliance documentation need accessible colour treatment. Accessibility check done in Figma's built-in contrast checker or via automated tool.</td>
+          <td><span class="tool-tag primary">Figma</span><span class="tool-tag">WCAG contrast checker</span></td>
+          <td>Palette must be locked before Phase 3 (identity manual) and Phase 4 (Tailwind config).</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Typography selection + scale</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Select a typeface pairing: heading font (characterful, bold, modern) + body font (highly readable at small sizes). Recommendation: Google Fonts for web licensing simplicity (no font cost, loads via CDN, works with Next.js). Consider: Plus Jakarta Sans or DM Sans for headings (clean, purposeful), Inter for body (best-in-class legibility). Define type scale: H1 through H4, body, caption, label. Scale expressed in rem. Same scale becomes the Tailwind typography config in Phase 4.</td>
+          <td><span class="tool-tag primary">Google Fonts</span><span class="tool-tag">Figma</span></td>
+          <td>Font selection must be confirmed before Phase 3 guidelines PDF and Phase 4 build. No licensing cost risk with Google Fonts.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Brand expression mockups (3 contexts)</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Apply the identity to three real-world surfaces to show City how it lives before committing: (1) Proposal cover page — GrowthIQ brand, corporate client name, date; (2) Email header — for City's client communications; (3) LinkedIn / social post — organic content for GrowthIQ's corporate audience. All three built in Figma, exported as PNG for presentation. These become the first three templates in Phase 3.</td>
+          <td><span class="tool-tag primary">Figma</span><span class="tool-tag">PNG export</span></td>
+          <td>Built once colour and typography are locked.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">City final sign-off on identity</div></td>
+          <td><span class="owner-city">City</span></td>
+          <td class="task-how">City ticks the Phase 2 sign-off checkbox in Notion. At this point the identity is locked — Phase 3 guidelines and Phase 4 design are based on exactly this. Post-sign-off changes to identity are out of scope and quoted separately.</td>
+          <td><span class="tool-tag primary">Notion</span></td>
+          <td>Hard gate for Phase 3 + Phase 4.</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="section" id="phase3">
+    <div class="section-label">Phase 03 · Weeks 4–5</div>
+    <h2>Brand Guidelines & Templates</h2>
+    <p class="section-desc">The tools City's team uses independently after launch. Runs in parallel with the end of Phase 2 and start of Phase 4 copy.</p>
+
+    <div class="phase-block">
+      <div class="phase-header">
+        <h3>Phase 3 — Task Delivery Map</h3>
+        <div class="phase-meta">Deliverables: Identity Manual (PDF) · Voice & Tone Guide · Pitch Deck Template · HTML Email Signature</div>
+      </div>
+      <table class="task-table">
+        <tr>
+          <th style="width:22%">Task</th>
+          <th style="width:8%">Owner</th>
+          <th style="width:35%">How We Deliver It</th>
+          <th style="width:20%">Tools</th>
+          <th style="width:15%">Blockers / Notes</th>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Write Voice & Tone Guide (with examples)</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Claude drafts the guide rooted in Phase 1 messaging framework. Sections: (1) Brand personality (3 adjectives, defined); (2) How GrowthIQ sounds in proposals, emails, website, social; (3) Language to use / avoid (table format); (4) Before/after copy examples — one per channel; (5) Tone shift by audience (Transformation Manager vs. Finance vs. Procurement). Key insight from the brief baked in: this brand sounds like it's making corporate transformation professionals look good, not threatening their role.</td>
+          <td><span class="tool-tag primary">Claude</span><span class="tool-tag">docx skill</span></td>
+          <td>Requires Phase 1 messaging framework. Can draft once Phase 1 is complete.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Build Corporate Identity Manual (PDF)</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">The single source of brand truth — the document City hands to any designer, printer, or developer who works on GrowthIQ going forward. Sections: Logo usage rules (clear space, minimum sizes, incorrect usage), colour palette with values, typography scale, photography/imagery direction, brand voice summary (from voice guide), digital and print usage rules, do's and don'ts. Built as a designed PDF — not a Word doc. Uses the canvas-design skill for layout, or Figma frames exported as PDF if higher design fidelity is needed.</td>
+          <td><span class="tool-tag primary">canvas-design skill</span><span class="tool-tag">PDF skill</span><span class="tool-tag">Figma</span></td>
+          <td>Requires Phase 2 identity sign-off. This document codifies the output of Phase 2.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Build branded pitch deck template</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">PowerPoint master deck (.pptx) using GrowthIQ brand identity. Built using the pptx skill. Structure mirrors PwC and Sun International deck layouts (once City shares them) so City's existing content migrates into the new template cleanly. Slide masters: title slide, section divider, content (text + image), data/stats, quote/testimonial, final CTA. City's team can update text directly in PowerPoint — no design software required. Delivered as .pptx to City via email and uploaded to Notion.</td>
+          <td><span class="tool-tag primary">pptx skill</span></td>
+          <td>Requires Phase 2 identity + PwC/Sun decks for structural reference. PwC/Sun decks unlock the layout — template can be built without them but will need revision once received.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Build HTML email signature</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Custom HTML/CSS email signature generated by Claude. Includes: GrowthIQ wordmark (linked to growthiq.co.za), City's name + title, phone/WhatsApp, email, website. Gmail and Outlook both render HTML signatures with limitations — no floats, limited CSS, inline styles only. Built and tested for both. A plain-text fallback version also generated. Delivered as an HTML file with copy-paste installation instructions for Gmail and Outlook. City's team can install it without a developer.</td>
+          <td><span class="tool-tag primary">Claude (HTML/CSS)</span></td>
+          <td>Requires Phase 2 wordmark (SVG → hosted image URL for email). Logo must be hosted on a live URL before email signature works — growthiq.co.za must be live, or logo hosted on Vercel/Cloudflare.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Share Phase 3 deliverables + City confirmation</div></td>
+          <td><span class="owner-maru">Maru</span> → <span class="owner-city">City</span></td>
+          <td class="task-how">All four Phase 3 deliverables shared as a single pack: PDF identity manual, voice guide (Word), pitch deck (.pptx), and HTML signature file. Uploaded to Notion Phase 3 page and emailed to City. City ticks the confirmation checkbox. This is not a design sign-off — it's receipt and acceptance. City's feedback on these tools is welcome but Phase 3 does not gate Phase 4.</td>
+          <td><span class="tool-tag primary">Notion</span><span class="tool-tag">Email</span></td>
+          <td>Phase 3 runs parallel to Phase 4 start — not a hard gate for website build.</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="section" id="phase4">
+    <div class="section-label">Phase 04 · Weeks 5–8</div>
+    <h2>Marketing Website — growthiq.co.za</h2>
+    <p class="section-desc">5-page credibility site. Goal: get corporate prospects to take the call. Not self-serve. Not lead gen. Next.js on Vercel, Cloudflare DNS. SA-market-optimised: mobile-first, WhatsApp CTA, fast on mobile data.</p>
+
+    <div class="callout warning">
+      <strong>SA market constraint: mobile-first is non-negotiable</strong>
+      The corporate target list is SA enterprise, but the decision-makers (Transformation Managers, Procurement) are not desk-bound. Expect the site to be checked on mobile during a meeting or commute. Mobile performance is weighted the same as desktop — not an afterthought. Next.js + Cloudflare CDN handles this at the infrastructure level. Images served in WebP via Next.js Image component. No uncompressed assets.
+    </div>
+
+    <div class="phase-block">
+      <div class="phase-header">
+        <h3>Phase 4 — Task Delivery Map</h3>
+        <div class="phase-meta">Pages: Home · How It Works · About/Team · Client Stories · Contact & Demo</div>
+      </div>
+      <table class="task-table">
+        <tr>
+          <th style="width:22%">Task</th>
+          <th style="width:8%">Owner</th>
+          <th style="width:35%">How We Deliver It</th>
+          <th style="width:20%">Tools</th>
+          <th style="width:15%">Blockers / Notes</th>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Write copy — Home & How It Works</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how"><strong>Home:</strong> Hero headline from approved positioning statement. Sub-headline addresses the "enhances your reporting" message. Three value pillars (informed by portal's working features: task tracking, assessments, audit trail). Social proof section (placeholder until testimonials received). CTA: "See how it works" → internal link + "Request a demo" → Contact page. <strong>How It Works:</strong> Grounded entirely in the actual portal workflow documented in Section 02 above. Five-step flow: Corporate engagement → SME onboarding → Compliance task tracking → Assessments + scoring → Corporate reporting. Each step ties to real portal capability. B-BBEE Amended Codes 2023 referenced in context where it naturally fits. Copy written in the voice from Phase 3 guide.</td>
+          <td><span class="tool-tag primary">Claude (copywriting skill)</span><span class="tool-tag">Phase 1 messaging framework</span></td>
+          <td>Requires Phase 1 positioning sign-off. Portal workflow mapped in Section 02 — no portal inspection needed at copy stage.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Write copy — About/Team, Client Stories, Contact</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how"><strong>About/Team:</strong> City's bio + team profiles. Placeholder written by Claude, City replaces with actual content. Professional photos placed here once received — layout designed to hold real images, not stock photos. <strong>Client Stories:</strong> Template structure for testimonial case studies. Placeholders until City shares testimonials. Each story follows: client context → challenge → GrowthIQ outcome → quote. <strong>Contact & Demo:</strong> Form fields: Company, Name, Email, WhatsApp number, Estimated number of SMEs in programme, Primary compliance goal. WhatsApp CTA: wa.me/27837789288 with pre-filled "Hi, I'd like to learn more about GrowthIQ." If Calendly decision is made: Calendly embed on this page.</td>
+          <td><span class="tool-tag primary">Claude (copywriting skill)</span><span class="tool-tag">Calendly (if confirmed)</span></td>
+          <td><span class="blocker-badge">⚠ Photos + testimonials outstanding</span><div class="task-detail">Placeholders designed in layout. Real assets replace them — site does not wait for them to go live.</div></td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">City copy review & feedback</div></td>
+          <td><span class="owner-city">City</span></td>
+          <td class="task-how">Copy shared as a Google Doc or Notion page — City comments inline. Feedback round is scoped to copy accuracy and factual corrections, not tone rewrites (tone is locked from Phase 1/3). Two working days for City to respond. Maru turnaround on accepted edits: 24 hours.</td>
+          <td><span class="tool-tag">Notion or Google Docs</span></td>
+          <td>Allow 2 days. Chase on Day 3 if no response.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Site design — desktop + mobile (Figma)</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">All 5 pages designed in Figma at two breakpoints: 1440px desktop and 390px mobile. Design tokens (colours, spacing, type scale) match exactly the Phase 2 identity system. Component-based: navbar, hero, feature card, testimonial block, form, footer are all reusable. Figma frames shared with City for reference — City is not asked to formally approve design (this slows builds unnecessarily). Design is indicative; final QA happens in staging. Portal screenshots/mockups used on the "How It Works" page — using the existing portal's best screens (SME record, action list) with data redacted. If portal screens are too rough, illustrative mockups built in Figma instead.</td>
+          <td><span class="tool-tag primary">Figma</span><span class="tool-tag">Phase 2 identity tokens</span></td>
+          <td>Requires Phase 2 identity sign-off. Runs in parallel with copy finalisation.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Site build — Next.js + Tailwind</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Next.js 14 App Router. File structure: /app/page.tsx (Home), /app/how-it-works/page.tsx, /app/about/page.tsx, /app/client-stories/page.tsx, /app/contact/page.tsx. Tailwind config seeded with Phase 2 colour palette and type scale. next/image for all photos (WebP auto-conversion, lazy loading). next/font for Google Font loading (zero layout shift). All pages statically generated (SSG) — no dynamic data fetch on growthiq.co.za. SEO: unique <title> and <meta description> per page, Open Graph tags, sitemap.xml generated via next-sitemap package. If Sanity CMS is confirmed: Sanity Studio at /studio, content fetched at build time via GROQ queries.</td>
+          <td><span class="tool-tag primary">Next.js 14</span><span class="tool-tag primary">Tailwind CSS</span><span class="tool-tag">next/image</span><span class="tool-tag">next/font</span><span class="tool-tag">next-sitemap</span><span class="tool-tag">Sanity (if confirmed)</span><span class="tool-tag">GitHub</span></td>
+          <td>Requires: Figma design complete, copy finalised, Phase 2 identity tokens locked. GitHub repo created and linked to Vercel on day 1 of build.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Contact form + email integration</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Next.js API route: /api/contact. Form submit → Resend API → email to city@growthfirm.co.za. Email subject: "GrowthIQ Demo Request — [Company Name]". Email body: all form fields formatted clearly. Reply-to set to prospect's email so City can reply directly from his inbox. Form validation: client-side (React) + server-side (API route). Spam: honeypot field (invisible to users, bots fill it → request rejected). No CAPTCHA — bad for conversion. Rate limiting: 3 submissions per IP per hour via Vercel edge middleware.</td>
+          <td><span class="tool-tag primary">Resend</span><span class="tool-tag">Next.js API route</span><span class="tool-tag">Vercel edge middleware</span></td>
+          <td>Resend account setup + from-address verification required. Domain: growthiq.co.za must be live on Cloudflare before Resend can verify the sending domain.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">WhatsApp CTA integration</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Floating WhatsApp button on all pages (bottom-right, mobile-only display). Links to: wa.me/27837789288?text=Hi%2C%20I%27d%20like%20to%20learn%20more%20about%20GrowthIQ. On desktop: also appears as a secondary CTA below the Contact form ("Prefer WhatsApp? Message us directly."). GA4 event fired on click: event: "whatsapp_cta_click", page: [page name]. This is the most important conversion action for the SA enterprise market — treat it as equal to the form.</td>
+          <td><span class="tool-tag primary">WhatsApp wa.me</span><span class="tool-tag">GA4 event tracking</span></td>
+          <td>No WhatsApp Business API needed at this stage. wa.me link works. If volume grows, upgrade to Cloud API later.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Analytics + Search Console setup</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">GA4: property created for growthiq.co.za, measurement ID added to Next.js via environment variable, loaded via next/script (afterInteractive). Key events tracked: page_view (auto), form_submit (Contact form), whatsapp_cta_click, portal_login_click (the "Client Login" button). Google Search Console: property verified via DNS TXT record (Cloudflare). Sitemap submitted on launch day. The portal (portal.growthiq.co.za) currently has zero analytics — this is the marketing site only. Portal analytics is a separate later-phase task.</td>
+          <td><span class="tool-tag primary">Google Analytics 4</span><span class="tool-tag primary">Google Search Console</span><span class="tool-tag">next/script</span><span class="tool-tag">Cloudflare DNS</span></td>
+          <td>GSC verification requires Cloudflare DNS access. GA4 event plan documented before build — not retrofitted.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Staging review — share with City</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Vercel preview deploy URL shared with City (format: growthiq-[hash].vercel.app). City reviews on both desktop and mobile. City's feedback captured in Notion as a comment list. Maru resolves feedback items within 48 hours. Second round of staging review only if issues are significant — minor wording changes go straight to production after sign-off.</td>
+          <td><span class="tool-tag primary">Vercel preview URL</span><span class="tool-tag">Notion</span></td>
+          <td>Vercel MCP connected — preview URLs generated automatically on push to staging branch.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">DNS setup + SSL + Cloudflare config</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">growthiq.co.za is already owned by City. Steps: (1) Transfer DNS to Cloudflare nameservers (or add Cloudflare if not already on it). (2) Add CNAME record: growthiq.co.za → cname.vercel-dns.com. (3) www redirect to apex or vice versa (consistent). (4) SSL: Cloudflare full (strict) mode + Vercel auto-provision. (5) Cloudflare security headers: HSTS, X-Frame-Options, X-Content-Type-Options. (6) Cloudflare cache rules: static assets cached at edge, HTML not cached (to ensure GSC can crawl fresh). Current status: domain is owned but there's no indexed presence — this is a clean slate, no redirect mapping needed.</td>
+          <td><span class="tool-tag primary">Cloudflare</span><span class="tool-tag primary">Vercel</span></td>
+          <td>Requires access to City's domain registrar to update nameservers. Confirm City has registrar login. DNS propagation: 24–48 hours.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Pre-launch QA</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Checklist before any "live" announcement: (1) All 5 pages load on mobile (Chrome/Android, Safari/iOS); (2) Contact form submits and City receives email; (3) WhatsApp button opens correct chat; (4) GA4 events firing (check DebugView); (5) GSC ownership verified; (6) Sitemap submitted and indexed; (7) All images loading (no broken img src); (8) No console errors; (9) Lighthouse score ≥85 on mobile performance; (10) Page titles and meta descriptions unique per page; (11) "Client Login" button links to portal.growthiq.co.za correctly; (12) Legal: footer has trading name + "a product of Seokane Inc" or registered entity depending on reg status decision.</td>
+          <td><span class="tool-tag primary">Lighthouse</span><span class="tool-tag">Chrome DevTools</span><span class="tool-tag">GA4 DebugView</span><span class="tool-tag">GSC</span></td>
+          <td>Company registration status must be confirmed for footer legal copy. This is the only remaining City-dependent item at QA stage.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Live launch + admin handover</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Production deploy via Vercel. Custom domain goes live. City given: (1) Vercel dashboard login for deployment visibility; (2) GA4 access (read-only); (3) GSC access; (4) If Sanity CMS: Sanity Studio login + walkthrough for adding/editing content; (5) Contact form test confirmation. Handover document: 1-page PDF covering how to: update content (if CMS), check form submissions, view analytics, contact Maru for changes. Post-launch 48-hour monitoring: Maru watches for errors, broken links, form failures.</td>
+          <td><span class="tool-tag primary">Vercel</span><span class="tool-tag">GA4</span><span class="tool-tag">GSC</span><span class="tool-tag">Sanity Studio (if CMS)</span><span class="tool-tag">PDF skill</span></td>
+          <td>Hosting billing (~R150/month Vercel + Cloudflare free) starts at launch. Confirm billing setup with City before go-live.</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- PHASE 5: AI LAYER -->
+  <div class="section" id="phase5">
+    <div class="section-label">Phase 05 · Post Phase 4 launch · Scope TBD</div>
+    <h2>AI Layer + Portal Remediation</h2>
+    <p class="section-desc">The intelligence layer that sits in front of the portal. Users interact with the AI in plain English — it fetches data, surfaces insights, and guides input. Starts only after Phase 4 is live and portal source code is accessible to Maru.</p>
+
+    <div class="callout warning">
+      <strong>Pre-condition: Maru must access the portal source code before Phase 5 can be scoped</strong>
+      City holds the source code. Maru needs to inspect the database schema to scope the API middleware layer. This conversation happens alongside or immediately after Phase 4 go-live. NetGen's exit timeline also affects this — if migration off NetGen is in motion, the API is built on the new stack, not NetGen's.
+    </div>
+
+    <div class="phase-block">
+      <div class="phase-header">
+        <h3>Phase 5 — Task Delivery Map</h3>
+        <div class="phase-meta">Deliverables: API Middleware · AI Assistant Interface · Portal Fixes · Automated Communications</div>
+      </div>
+      <table class="task-table">
+        <tr>
+          <th style="width:22%">Task</th>
+          <th style="width:8%">Owner</th>
+          <th style="width:35%">How We Deliver It</th>
+          <th style="width:20%">Tools</th>
+          <th style="width:15%">Blockers / Notes</th>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Portal source code review + DB schema mapping</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">City shares source code access. Maru maps the database schema — every table, relationship, and key data field relevant to: SME company records, compliance tasks, documents, assessment scores, user accounts. This mapping becomes the API specification. Output: a data dictionary that defines exactly what the AI layer can read and write.</td>
+          <td><span class="tool-tag primary">GitHub / source access</span><span class="tool-tag">Claude code analysis</span></td>
+          <td><span class="blocker-badge">⚠ Requires source code access</span></td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Build API middleware layer</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">A lightweight REST API service (Next.js API routes or a separate Node service) that sits between the AI assistant and the portal's database. Endpoints cover: GET compliance tasks by SME, GET document status, GET assessment scores, GET portfolio summary, PATCH task status, POST new document. The AI assistant calls these endpoints — it never touches the portal UI directly. Authentication: JWT tokens, same credentials as the portal. Deployed on Vercel alongside or separate from the marketing site.</td>
+          <td><span class="tool-tag primary">Next.js API routes</span><span class="tool-tag">JWT auth</span><span class="tool-tag">Vercel</span></td>
+          <td>Scoped from DB schema mapping. Complexity depends on portal's data structure.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Build AI assistant interface (app.growthiq.co.za)</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">A separate Next.js application at app.growthiq.co.za (or a subdomain). Landing screen: "How can I help you today?" Powered by Claude API (Anthropic). The AI has access to the middleware API and responds to natural language queries: "Show me overdue tasks for Supplier X." "Which of my SMEs have B-BBEE documents expiring this quarter?" "Walk me through updating this task." For input flows: the AI guides step by step — "To update this task, here's the field. Should I update it to Completed?" — removing all navigation friction. User auth mirrors the portal login.</td>
+          <td><span class="tool-tag primary">Claude API (Anthropic)</span><span class="tool-tag primary">Next.js</span><span class="tool-tag">Vercel</span><span class="tool-tag">Cloudflare</span></td>
+          <td>Requires API middleware live. This is the product differentiator — no ESD competitor has this.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Portal remediation — brief to NetGen</div></td>
+          <td><span class="owner-maru">Maru</span> → <span class="owner-city">City</span></td>
+          <td class="task-how">Maru drafts a precise technical brief from the diagnostic findings: (1) Fix default landing screen — dashboard, not admin table; (2) Add direct navigation to Compliance Tasks and Documents; (3) Remove test/placeholder data; (4) Fix Sentry error monitoring; (5) Fix document expiry alert logic; (6) Fix mobile navigation collapse. City sends this brief to NetGen. Maru verifies fixes once NetGen confirms completion. Alternatively, if City is migrating off NetGen, Maru fixes these on the new stack directly.</td>
+          <td><span class="tool-tag primary">Diagnostic findings (May 2026)</span><span class="tool-tag">Notion brief</span></td>
+          <td>City action to brief NetGen. Maru produces the brief document.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Automated communications — WhatsApp + email triggers</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Three trigger types, all automated — no human action required: (1) <strong>Weekly task alert</strong>: WhatsApp message to the Transformation Manager — "Hi [Name], 2 compliance tasks for [SME X] are due this Friday." Link to AI assistant. (2) <strong>Document expiry warning</strong>: Email + WhatsApp 30 days and 7 days before any document expires. (3) <strong>Monthly Portfolio Health Report</strong>: PDF emailed to corporate client — compliance score per SME, tasks completed, tasks overdue, documents status. This report is the value the corporate pays for. Communications engine: WhatsApp Business Cloud API (Meta) for mobile, Brevo for email campaigns and transactional.</td>
+          <td><span class="tool-tag primary">WhatsApp Business Cloud API</span><span class="tool-tag primary">Brevo</span><span class="tool-tag">Claude API (report generation)</span><span class="tool-tag">Resend</span></td>
+          <td>WhatsApp Business Cloud API requires Meta Business verification. Allow 2 weeks for Meta approval process in SA.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Install analytics inside the portal</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">The existing portal has zero usage tracking — City cannot tell which corporate clients are logging in, which are not, or which features are being used. Install GA4 inside the portal (or PostHog for richer product analytics). Key events: login, compliance task viewed, task status updated, document uploaded, assessment started, report generated. This data is the foundation for identifying at-risk accounts and informing the AI layer's proactive alerts.</td>
+          <td><span class="tool-tag primary">GA4 or PostHog</span></td>
+          <td>Requires portal source code access. PostHog has a generous free tier and better product analytics than GA4 for a SaaS portal.</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- PHASE 6: GTM + LAUNCH -->
+  <div class="section" id="phase6">
+    <div class="section-label">Phase 06 · Concurrent with Phase 4 launch · Ongoing</div>
+    <h2>Go-To-Market Strategy & Product Launch</h2>
+    <p class="section-desc">The commercial engine. Maru acts as GrowthIQ Champion — managing brand content, outreach, media, and the launch event. City focuses on service delivery and corporate relationships.</p>
+
+    <div class="callout info">
+      <strong>Maru as GrowthIQ Champion</strong>
+      This phase is the commercial rationale for the Champion role. Maru runs the GTM as part of the ongoing retainer — digital channels, content, outreach sequences, media placements, and the launch event. Terms to be agreed once Phase 4 is live and tested. This work cannot meaningfully start before Phase 1 positioning is locked, because the GTM must carry the right message.
+    </div>
+
+    <div class="phase-block">
+      <div class="phase-header">
+        <h3>Phase 6 — Task Delivery Map</h3>
+        <div class="phase-meta">Deliverables: Launch Event · LinkedIn Strategy · Media Placements · Outreach Sequences · Monthly Comms Cadence</div>
+      </div>
+      <table class="task-table">
+        <tr>
+          <th style="width:22%">Task</th>
+          <th style="width:8%">Owner</th>
+          <th style="width:35%">How We Deliver It</th>
+          <th style="width:20%">Tools</th>
+          <th style="width:15%">Blockers / Notes</th>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">LinkedIn content strategy — City's personal brand</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">The primary channel for reaching Transformation Managers, Procurement Directors, and B-BBEE consultants in SA. Content posts under City's personal profile — not the GrowthIQ brand page. People buy from people in this market. Maru drafts posts; City reviews and publishes. Cadence: 1 post per week starting 4 weeks before launch event. Initial themes: ESD compliance failures in SA (data-backed), regulatory commentary on Amended Codes 2023, thought leadership on the "replacing me" fear. Product mentions are secondary until launch. Post format: text-only performs best on LinkedIn SA for B2B authority building.</td>
+          <td><span class="tool-tag primary">LinkedIn (City's profile)</span><span class="tool-tag">Claude (content drafts)</span><span class="tool-tag">marketing:content-creation skill</span></td>
+          <td>Requires Phase 1 messaging framework. Content must carry the approved positioning — not off-brand improvisation.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Product launch event — invitation-only corporate session</div></td>
+          <td><span class="owner-maru">Maru</span> + <span class="owner-city">City</span></td>
+          <td class="task-how">Format: intimate, 20–30 senior invitees from the 80–100 corporate target list. Sandton venue. 90 minutes. Not a conference — a hosted session. Agenda: City opens with the ESD compliance crisis (data from Phase 1 research). Maru presents the solution and does a live demo of the website + portal + AI assistant (Phase 5 must be live, or demo on staging). One existing client or pilot endorser speaks for 2 minutes. Close with a clear next step: "Book your one-on-one demo this month." The event is photographed, recapped on LinkedIn, and written up for BizCommunity the same week. Maru handles invitations, event coordination, and post-event follow-up sequences.</td>
+          <td><span class="tool-tag primary">Eventbrite or Google Forms (RSVPs)</span><span class="tool-tag">GrowthIQ email (Brevo)</span><span class="tool-tag">LinkedIn (recap)</span></td>
+          <td>Requires Phase 4 live and Phase 1 positioning locked. Timing: 2–4 weeks after Phase 4 go-live. Venue cost is a separate line item — to be agreed.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Media placements — BizCommunity, ITWeb</div></td>
+          <td><span class="owner-maru">Maru</span> + <span class="owner-city">City</span></td>
+          <td class="task-how">Two placements, timed to the launch event week: (1) <strong>BizCommunity ICT</strong>: a thought leadership article written by City (drafted by Maru) — angle: "Why SA corporates are failing their ESD obligations — and what the data shows." The product is the proof point inside the article, not the headline. Submitted 1 week before the event. (2) <strong>ITWeb</strong>: product launch announcement. Shorter, factual, newsworthy. Submitted launch week. BusinessDay is worth pursuing if Phase 1 research surfaces strong enough statistics on ESD compliance failure rates across SA corporates.</td>
+          <td><span class="tool-tag primary">Claude (article drafts)</span><span class="tool-tag">marketing:draft-content skill</span><span class="tool-tag">BizCommunity editorial</span></td>
+          <td>Requires Phase 1 competitive research data to back the article claims. BizCommunity accepts contributed articles — no cost, but editorial review required.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Corporate outreach sequence — 80–100 target list</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Once City shares the Excel target list, Maru builds a personalised outreach sequence per company segment. Sequence: (1) LinkedIn connection request from City to the relevant contact at each target company; (2) 3 days later — personalised first message referencing their industry's ESD obligations; (3) 7 days later — follow-up with a specific insight or stat relevant to their sector; (4) Post-launch event — invitation to the next session or a one-on-one demo. All messages drafted by Maru, sent by City. Maru tracks responses and pipeline in Notion. WhatsApp outreach follows for warm leads only.</td>
+          <td><span class="tool-tag primary">LinkedIn (City's profile)</span><span class="tool-tag">Notion (pipeline tracker)</span><span class="tool-tag">Claude (personalised message drafts)</span></td>
+          <td><span class="blocker-badge">⚠ Blocked on corporate target list (Excel)</span> Sequence cannot be personalised until list is received and segmented by industry.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Monthly compliance newsletter — Brevo</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Monthly email to GrowthIQ's prospect and client list. Content: one compliance insight or regulatory update relevant to B-BBEE ESD, one product tip or feature highlight, one client story (once available). Keeps GrowthIQ top of mind between sales touchpoints. Brevo manages the list and delivery. Maru drafts and schedules. City reviews before send. List is seeded with: launch event attendees, LinkedIn connections who engage, and outreach prospects who have not yet converted.</td>
+          <td><span class="tool-tag primary">Brevo</span><span class="tool-tag">Claude (newsletter drafts)</span><span class="tool-tag">marketing:email-sequence skill</span></td>
+          <td>Brevo free tier: up to 300 emails/day, unlimited contacts. Sufficient for launch phase. First newsletter sent launch week.</td>
+        </tr>
+        <tr class="task-row">
+          <td><div class="task-name">Post-launch pipeline tracking + GIQ Champion reporting</div></td>
+          <td><span class="owner-maru">Maru</span></td>
+          <td class="task-how">Maru tracks every prospect touchpoint and pipeline stage in a Notion CRM view: company, contact, stage (awareness / demo booked / proposal sent / closed), last activity, next action. City has read access. Monthly report to City: pipeline status, marketing metrics (LinkedIn reach, newsletter open rates, event attendance), and next month's GTM plan. This is the accountability structure for the Champion role — City sees exactly what Maru is doing commercially on GrowthIQ's behalf.</td>
+          <td><span class="tool-tag primary">Notion (CRM view)</span><span class="tool-tag">GA4 (site metrics)</span><span class="tool-tag">Claude (monthly report)</span><span class="tool-tag">operations:status-report skill</span></td>
+          <td>Notion CRM view built as part of Phase 6 setup. Monthly report delivered first working day of each month.</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- INTEGRATION MAP -->
+  <div class="section" id="integrations">
+    <div class="section-label">Section 07</div>
+    <h2>Integration Map</h2>
+    <p class="section-desc">Every integration point across the project — what connects to what, and which phase it belongs to.</p>
+    <div class="integration-map">
+      <div class="int-row"><div class="int-from">Phase 1 outputs</div><div class="int-arrow">→</div><div class="int-to"><strong>Phase 3 Voice Guide</strong> — messaging framework is the direct input for the voice & tone guide</div></div>
+      <div class="int-row"><div class="int-from">Phase 1 outputs</div><div class="int-arrow">→</div><div class="int-to"><strong>Phase 4 Copy</strong> — positioning statement and messaging variants brief every page of website copy</div></div>
+      <div class="int-row"><div class="int-from">Phase 2 identity tokens</div><div class="int-arrow">→</div><div class="int-to"><strong>Phase 3 PDF + pitch deck</strong> — colour palette, typography, and wordmark applied to all templates</div></div>
+      <div class="int-row"><div class="int-from">Phase 2 identity tokens</div><div class="int-arrow">→</div><div class="int-to"><strong>Phase 4 Tailwind config</strong> — colours and type scale translate directly into tailwind.config.ts CSS variables</div></div>
+      <div class="int-row"><div class="int-from">growthiq.co.za (Phase 4)</div><div class="int-arrow">→</div><div class="int-to"><strong>portal.growthiq.co.za</strong> — "Client Login" nav link. Outbound only. No data integration between marketing site and portal.</div></div>
+      <div class="int-row"><div class="int-from">Contact form (Phase 4)</div><div class="int-arrow">→</div><div class="int-to"><strong>Resend → city@growthfirm.co.za</strong> — demo request emails delivered to City's inbox. Reply-to set to prospect.</div></div>
+      <div class="int-row"><div class="int-from">WhatsApp CTA (Phase 4)</div><div class="int-arrow">→</div><div class="int-to"><strong>wa.me/27837789288</strong> — direct WhatsApp thread with City. No middleware. GA4 click event tracked.</div></div>
+      <div class="int-row"><div class="int-from">Vercel deploys</div><div class="int-arrow">→</div><div class="int-to"><strong>GitHub main branch</strong> — auto-deploy on push. Preview deploys on all branches. Maru MCP connected.</div></div>
+      <div class="int-row"><div class="int-from">Cloudflare DNS</div><div class="int-arrow">→</div><div class="int-to"><strong>Vercel</strong> (CNAME) + <strong>Resend</strong> (MX/TXT for sending domain) + <strong>Google Search Console</strong> (TXT verification)</div></div>
+      <div class="int-row"><div class="int-from">Notion (project)</div><div class="int-arrow">→</div><div class="int-to"><strong>ClickUp</strong> — Notion is client-facing; ClickUp is internal Maru task tracking. SOP pilot runs across both.</div></div>
+      <div class="int-row"><div class="int-from">AI middleware API (Ph5)</div><div class="int-arrow">→</div><div class="int-to"><strong>Portal DB</strong> — reads/writes compliance tasks, SME records, documents, assessments. JWT-authenticated. No portal UI interaction.</div></div>
+      <div class="int-row"><div class="int-from">AI assistant (Ph5)</div><div class="int-arrow">→</div><div class="int-to"><strong>Claude API (Anthropic)</strong> — natural language processing. User query → Claude → middleware API → structured response back to user.</div></div>
+      <div class="int-row"><div class="int-from">Comms engine (Ph5)</div><div class="int-arrow">→</div><div class="int-to"><strong>WhatsApp Business Cloud API</strong> (weekly task alerts, document expiry) + <strong>Brevo</strong> (monthly Portfolio Health Report email + newsletter)</div></div>
+      <div class="int-row"><div class="int-from">GTM pipeline (Ph6)</div><div class="int-arrow">→</div><div class="int-to"><strong>Notion CRM view</strong> — Maru tracks every prospect. City has read access. Monthly status report generated from this view.</div></div>
+      <div class="int-row"><div class="int-from">Launch event (Ph6)</div><div class="int-arrow">→</div><div class="int-to"><strong>Brevo</strong> (invitations + follow-up sequences) + <strong>LinkedIn</strong> (recap content) + <strong>BizCommunity/ITWeb</strong> (media placement same week)</div></div>
+    </div>
+  </div>
+
+  <!-- OPEN QUESTIONS -->
+  <div class="section" id="openq">
+    <div class="section-label">Section 08</div>
+    <h2>Open Questions — Decisions Required Before Work Proceeds</h2>
+    <p class="section-desc">These are not optional. Each one blocks a specific deliverable. Resolve before the phase it affects starts.</p>
+    <div class="oq-list">
+      <div class="oq-item">
+        <div class="oq-num">1</div>
+        <div class="oq-body">
+          <div class="oq-q">GrowthIQ company registration — registered separately or still under Seokane Inc?</div>
+          <div class="oq-why">Wordmark treatment, website footer legal copy, and all official document headers depend on this. If not yet registered: wordmark must avoid implying a separate legal entity until registration is confirmed.</div>
+          <div class="oq-blocks">Blocks: Phase 2 wordmark finalisation · Phase 4 footer copy · Phase 3 email signature</div>
+        </div>
+      </div>
+      <div class="oq-item">
+        <div class="oq-num">2</div>
+        <div class="oq-body">
+          <div class="oq-q">Domain registrar login — does City have direct access to growthiq.co.za registrar?</div>
+          <div class="oq-why">DNS transfer to Cloudflare requires nameserver changes at the registrar. If City doesn't have direct access (or if it was registered by a third party), this can delay Phase 4 launch by days.</div>
+          <div class="oq-blocks">Blocks: Phase 4 DNS setup · SSL · Go-live date</div>
+        </div>
+      </div>
+      <div class="oq-item">
+        <div class="oq-num">3</div>
+        <div class="oq-body">
+          <div class="oq-q">Portal "How It Works" visuals — existing screenshots or Figma mockups?</div>
+          <div class="oq-why">Raw portal screenshots show test data and a broken default landing screen. Figma mockups show the portal as it should look — and double as the Phase 5 remediation brief for NetGen. Recommendation: Figma mockups.</div>
+          <div class="oq-blocks">Blocks: Phase 4 "How It Works" design</div>
+        </div>
+      </div>
+      <div class="oq-item">
+        <div class="oq-num">4</div>
+        <div class="oq-body">
+          <div class="oq-q">Hosting billing — City owns accounts or Maru manages and invoices?</div>
+          <div class="oq-why">~R150/month total (Vercel + Cloudflare). Recommendation: City owns accounts, Maru deploys as a team member. Avoids infra dependency that creates a future NetGen-style situation.</div>
+          <div class="oq-blocks">Blocks: Phase 4 go-live billing setup</div>
+        </div>
+      </div>
+      <div class="oq-item">
+        <div class="oq-num">5</div>
+        <div class="oq-body">
+          <div class="oq-q">Portal source code access — when can Maru review it to scope Phase 5?</div>
+          <div class="oq-why">Phase 5 (AI layer) cannot be scoped until Maru inspects the database schema. City confirmed the source code exists. The earlier Maru can review it, the less gap there is between Phase 4 go-live and Phase 5 start.</div>
+          <div class="oq-blocks">Blocks: Phase 5 API middleware scope + timeline · NetGen exit decision</div>
+        </div>
+      </div>
+      <div class="oq-item">
+        <div class="oq-num">6</div>
+        <div class="oq-body">
+          <div class="oq-q">Maru Champion commercial terms — what does the ongoing retainer cover post-build?</div>
+          <div class="oq-why">Phase 6 GTM work (LinkedIn content, outreach sequences, launch event coordination, monthly newsletter, pipeline tracking) is Maru's Champion role. The current retainer (R8,000/month) was agreed for the build phase. The Champion role scope and fee need to be agreed before Phase 4 goes live — so there's no gap between launch and GTM execution.</div>
+          <div class="oq-blocks">Blocks: Phase 6 GTM start · Launch event timing</div>
+        </div>
+      </div>
+      <div class="oq-item">
+        <div class="oq-num">7</div>
+        <div class="oq-body">
+          <div class="oq-q">Launch event — budget, venue, and target date?</div>
+          <div class="oq-why">The invitation-only corporate session in Sandton requires a venue budget and a target date that coordinates with Phase 4 go-live + BizCommunity article timing. City needs to confirm: (A) budget available for venue (R5–15k depending on format); (B) preferred month; (C) which corporate contacts from the target list get priority invitations.</div>
+          <div class="oq-blocks">Blocks: Phase 6 launch event planning · Media placement timing</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="report-footer">
+  <div>GrowthIQ Brand Build · Technical Delivery Specification · Maru Online (Pty) Ltd</div>
+  <div>Internal working document · 10 June 2026 · v1.1 — updated with Phase 5 (AI Layer), Phase 6 (GTM), confirmed stack decisions</div>
+</div>
+
+</body>
+</html>
