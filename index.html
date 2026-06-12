@@ -281,7 +281,7 @@
 </head>
 <body>
 
-<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Back to top</button>
+<button class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Back to top</button>
 
 <div class="report-header">
   <div class="brand">Maru Online · Internal Working Document</div>
@@ -753,8 +753,8 @@
         <tr class="task-row">
           <td><div class="task-name">Write copy — About/Team, Client Stories, Contact</div></td>
           <td><span class="owner-maru">Maru</span></td>
-          <td class="task-how"><strong>About/Team:</strong> City's bio + team profiles. Placeholder written by Claude, City replaces with actual content. Professional photos placed here once received — layout designed to hold real images, not stock photos. <strong>Client Stories:</strong> Template structure for testimonial case studies. Placeholders until City shares testimonials. Each story follows: client context → challenge → GrowthIQ outcome → quote. <strong>Contact & Demo:</strong> Form fields: Company, Name, Email, WhatsApp number, Estimated number of SMEs in programme, Primary compliance goal. WhatsApp CTA: wa.me/27837789288 with pre-filled "Hi, I'd like to learn more about GrowthIQ." If Calendly decision is made: Calendly embed on this page.</td>
-          <td><span class="tool-tag primary">Claude (copywriting skill)</span><span class="tool-tag">Calendly (if confirmed)</span></td>
+          <td class="task-how"><strong>About/Team:</strong> City's bio + team profiles. Placeholder written by Claude, City replaces with actual content. Professional photos placed here once received — layout designed to hold real images, not stock photos. <strong>Client Stories:</strong> Template structure for testimonial case studies. Placeholders until City shares testimonials. Each story follows: client context → challenge → GrowthIQ outcome → quote. <strong>Contact & Demo:</strong> Form fields: Company, Name, Email, WhatsApp number, Estimated number of SMEs in programme, Primary compliance goal. WhatsApp CTA: wa.me/27837789288 with pre-filled "Hi, I'd like to learn more about GrowthIQ." Cal.com embed on this page for demo booking (confirmed in stack — syncs to City's Google Calendar).</td>
+          <td><span class="tool-tag primary">Claude (copywriting skill)</span><span class="tool-tag">Cal.com</span></td>
           <td><span class="blocker-badge">⚠ Photos + testimonials outstanding</span><div class="task-detail">Placeholders designed in layout. Real assets replace them — site does not wait for them to go live.</div></td>
         </tr>
         <tr class="task-row">
@@ -1093,6 +1093,7 @@
     }
 
     window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); // initialize state in case the page loads already scrolled
   })();
 </script>
 
